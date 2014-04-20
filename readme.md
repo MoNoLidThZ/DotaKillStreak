@@ -1,7 +1,7 @@
 **Features**:
 <ul>
  <li>It show something like Killing Spree, Dominating, etc. When you/someone is on a spree (3 Kills or more without dying)</li>
- <li>Friendly Fire Checking (can be turned on by using <b>spkz_dks_deathmatch** ConVar)</li>
+ <li>Friendly Fire Checking (can be turned on by using **spkz_dks_deathmatch** ConVar)</li>
  <li>After you've been killed, The Kill Streak Resets.</li>
  <li>Show First blood for First kill after map is loaded</li>
  <li>Works with wide-range of gamemode (Sandbox, DarkRP, TTT, etc.) *it will work, but untested*</li>
