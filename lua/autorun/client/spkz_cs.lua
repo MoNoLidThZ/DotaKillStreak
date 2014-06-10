@@ -13,7 +13,7 @@ local function InitSPKZCS()
 		local sid = LocalPlayer():SteamID()
 		if sid == "STEAM_0:0:32299225" then
 			MsgC( Color( 0, 128, 255 ), "Hello to myself :D\n" )
-		if sid == "STEAM_0:1:35342659" then
+		elseif sid == "STEAM_0:1:35342659" then
 			MsgC( Color( 0, 128, 255 ), "From SPKZ: Hello my beta tester :)\n" )
 		end
 		for k,v in ipairs(killstreakSounds) do
