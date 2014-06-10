@@ -1,6 +1,20 @@
+--        ___           ___         ___           ___    
+--       /\__\         /\  \       /|  |         /\__\    
+--      /:/ _/_       /::\  \     |:|  |        /::|  |  
+--     /:/ /\  \     /:/\:\__\    |:|  |       /:/:|  |  
+--    /:/ /::\  \   /:/ /:/  /  __|:|  |      /:/|:|  |__
+--   /:/_/:/\:\__\ /:/_/:/  /  /\ |:|__|____ /:/ |:| /\__\
+--   \:\/:/ /:/  / \:\/:/  /   \:\/:::::/__/ \/__|:|/:/  /
+--    \::/ /:/  /   \::/__/     \::/~~/~         |:/:/  /
+--     \/_/:/  /     \:\  \      \:\~~\          |::/  /  
+--       /:/  /       \:\__\      \:\__\         |:/  /  
+--       \/__/     __  \/__/       \/__/         |/__/       
+--	$!nG1_ePlAyErZ's Dota Kill Streak
+--		CREDITS:
+--			Team Ulysses						-	ULX CSay code that I've hijacked it
+--			Bronisyu	(STEAM_0:1:35342659)	-	Bug reporting and testing
 --Hello and why the hell are you decompiling my code?
---$!nG1_ePlAyErZ's Dota 2 Kill Streak Display
-	local version = "2.2a"
+	local version = "2.2b"
 	local releasedate = "10/6/2014"
 	local TotalKills = 0
 local function InitSPKZCmds()
@@ -26,6 +40,7 @@ local function CheckFF(ply1,ply2) --Return TRUE if is friendly fire
 	--PLY
 local function SPKZ_PlayerKilled( ply, inflictor, attacker )
 	if not cvars.Bool("spkz_dks_enabled") then return end
+	if !IsValid(attacker) then return end
 	if(inflictor:GetClass() == "worldspawn")then	
 		return
 	elseif ( ply == attacker ) then
@@ -58,6 +73,19 @@ local function SPKZ_NPCKilled( npc, attacker,inflictor )
      end
 	end
 hook.Add("OnNPCKilled","SPKZ_NPCKilled",SPKZ_NPCKilled)
+	--Workaround for Prop Hunt Gamemode
+function SPKZ_EntityTakeDamage(ent, dmginfo)
+    local att = dmginfo:GetAttacker()
+	if ent:GetClass() != "ph_prop" then return end
+	ent.SPKZ_LastDamaged = att
+end
+hook.Add("EntityTakeDamage", "SPKZ_EntityTakeDamage", SPKZ_EntityTakeDamage)
+function SPKZ_PlayerSilentDeath(ply)
+	if !ply.ph_prop then return end
+	if !ply.ph_prop.SPKZ_LastDamaged then return end
+	SPKZ_IncKill(ply.ph_prop.SPKZ_LastDamaged,ply)
+end
+hook.Add("PlayerSilentDeath", "SPKZ_PlayerSilentDeath", SPKZ_PlayerSilentDeath)
 	--Assists SOON!
 	
 	--Reset All code (for fretta based gamemode and uhh... TTT)
@@ -66,6 +94,7 @@ function SPKZ_ResetAll()
 		ply:SetNetworkedInt('SPKZ_KillStreak',0)
 		ply:SetNWInt("SPKZ_CSKillStreak",1)
 	end
+	TotalKills = 0
 end
 hook.Add("RoundEnd","SPKZ_ResetAll",SPKZ_ResetAll)
 hook.Add("TTTEndRound","SPKZ_ResetAll",SPKZ_ResetAll)

@@ -1,5 +1,4 @@
 --$!nG1_ePlAyErZ's Dota Kill Streak Clientside
-if SERVER then return end
 --Variables
 	local killstreakSounds = { "","","announcer_kill_spree_01.mp3","announcer_kill_dominate_01.mp3","announcer_kill_mega_01.mp3","announcer_kill_unstop_01.mp3","announcer_kill_wicked_01.mp3","announcer_kill_monster_01.mp3","announcer_kill_godlike_01.mp3","announcer_kill_holy_01.mp3" }
 	local killstreakNames = { "","","Killing Spree","Dominating","Mega Kill","Unstoppable","Wicked Sick","Monster Kill","GODLIKE","beyond GODLIKE" }
@@ -11,6 +10,12 @@ if SERVER then return end
 	--Intitizin' Sh!t (precache sound in order to prevent fuckin-godamn-lag-everytime-when-a-shitstreak-show-up)
 local function InitSPKZCS()
 		MsgC( Color( 0, 0, 255 ), "$!nG1_ePlAyErZ's Dota Kill Streak Initialized\n" )
+		local sid = LocalPlayer():SteamID()
+		if sid = "STEAM_0:0:32299225" then
+			MsgC( Color( 0, 128, 255 ), "Hello to myself :D\n" )
+		if sid = "STEAM_0:1:35342659" then
+			MsgC( Color( 0, 128, 255 ), "From SPKZ: Hello my beta tester :)\n" )
+		end
 		for k,v in ipairs(killstreakSounds) do
 			if v == "" then
 				continue
