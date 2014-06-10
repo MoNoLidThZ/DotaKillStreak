@@ -90,6 +90,7 @@ hook.Add("PlayerSilentDeath", "SPKZ_PlayerSilentDeath", SPKZ_PlayerSilentDeath)
 	
 	--Reset All code (for fretta based gamemode and uhh... TTT)
 function SPKZ_ResetAll()
+	MsgC( Color( 0, 128, 255 ), "[SPKZDKS]: Resetting all Killstreak Data...\n" )
 	for _,ply in ipairs(player.GetAll()) do
 		ply:SetNetworkedInt('SPKZ_KillStreak',0)
 		ply:SetNWInt("SPKZ_CSKillStreak",1)
