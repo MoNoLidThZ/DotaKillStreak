@@ -1,17 +1,16 @@
 --Hello and why the hell are you decompiling my code?
 --$!nG1_ePlAyErZ's Dota 2 Kill Streak Display
-	local version = "2.1"
-	local releasedate = "12/4/2014"
+	local version = "2.2"
+	local releasedate = "10/6/2014"
 	local TotalKills = 0
 local function InitSPKZCmds()
 		MsgC( Color( 0, 255, 0 ), "$!nG1_ePlAyErZ's Dota Kill Streak v".. version .."("..releasedate..") Initialized\n" )
 		--end
-		CreateConVar( "spkz_dks_enabled", "1", FCVAR_ARCHIVE, "If 0, Disable the entire system" )
-		CreateConVar( "spkz_dks_deathmatch", "1", FCVAR_ARCHIVE, "If 1, Ignore Friendly Fire Checking" )
-		CreateConVar( "spkz_dks_npcs", "1", FCVAR_ARCHIVE, "If 1, NPC Kills will also trigger the killstreak" )
-		CreateConVar( "spkz_dks_somethingawful_sound", "0", FCVAR_ARCHIVE, "If 1, Get Killed by \"Something Awful\" will have a sound." )
-		CreateConVar( "spkz_dks_CSKillTimer", "15", FCVAR_ARCHIVE, "How Many Seconds that Consecutive Kill Timer Reset?" )
-		CreateConVar( "spkz_dks_Broadcast", "1", FCVAR_ARCHIVE, "Only send message to every player or only killer?" )
+		CreateConVar( "SPKZ_DKS_Enabled", "1", FCVAR_ARCHIVE, "If 0, Disable the entire system" )
+		CreateConVar( "SPKZ_DKS_Deathmatch", "1", FCVAR_ARCHIVE, "If 1, Ignore Friendly Fire Checking" )
+		CreateConVar( "SPKZ_DKS_NPCs", "1", FCVAR_ARCHIVE, "If 1, NPC Kills will also trigger the killstreak" )
+		CreateConVar( "SPKZ_DKS_CSKillTimer", "15", FCVAR_ARCHIVE, "How Many Seconds that Consecutive Kill Timer Reset?" )
+		CreateConVar( "SPKZ_DKS_Broadcast", "1", FCVAR_ARCHIVE, "Only send message to every player or only killer?" )
 		resource.AddWorkshop("191294108") --this will make client also hear sounds
 		util.AddNetworkString("ClientsideKillStreak")
 	end
@@ -45,7 +44,8 @@ local function SPKZ_PlayerKilled( ply, inflictor, attacker )
 		ply:SetNetworkedInt('SPKZ_KillStreak',0)
 	end
 	end
-	hook.Add("PlayerDeath","SPKZ_PlayerKilled",SPKZ_PlayerKilled)
+	--Changed from PlayerDeath to DoPlayerDeath because shit is breaking in fretta
+	hook.Add("DoPlayerDeath","SPKZ_PlayerKilled",SPKZ_PlayerKilled)
 	--NPC
 local function SPKZ_NPCKilled( npc, attacker,inflictor )
 	if not cvars.Bool("spkz_dks_enabled") then return end
@@ -62,19 +62,28 @@ local function SPKZ_NPCKilled( npc, attacker,inflictor )
 	end
 hook.Add("OnNPCKilled","SPKZ_NPCKilled",SPKZ_NPCKilled)
 	--Assists SOON!
-
-
+	
+	--Reset All code (for fretta based gamemode and uhh... TTT)
+function SPKZ_ResetAll()
+	for _,ply in ipairs(player.GetAll()) do
+		ply:SetNetworkedInt('SPKZ_KillStreak',0)
+		ply:SetNWInt("SPKZ_CSKillStreak",1)
+	end
+end
+hook.Add("RoundEnd","SPKZ_ResetAll",SPKZ_ResetAll)
+hook.Add("TTTEndRound","SPKZ_ResetAll",SPKZ_ResetAll)
 function SPKZ_IncKill(killer,victim)
 	if not killer:IsPlayer() then return end
 	local FirstBlood = (TotalKills == 0)
 	local killstreakAtkr = killer:GetNetworkedInt('SPKZ_KillStreak',0)
 	killer:SetNetworkedInt('SPKZ_KillStreak',killstreakAtkr + 1)
-	SPKZ_IncCSKill(killer)
+	local csk = SPKZ_IncCSKill(killer)
 	local KillStreakTable = {
 		atkr = killer,
 		atkrN = killer:Nick(),
 		atkrT = killer:Team(),
 		atkrStreak = killstreakAtkr + 1,
+		atkrCStreak = csk,
 		isFirstBlood = FirstBlood,
 		victim = victim
 	}
@@ -90,10 +99,12 @@ end
 
 function SPKZ_IncCSKill(killer)
 	if not IsValid(killer) then return end
-	killer:SetNWInt("SPKZ_CSKillStreak",killer:GetNWInt("SPKZ_CSKillStreak",1)+1)
+	local n = killer:GetNWInt("SPKZ_CSKillStreak",1) + 1
+	killer:SetNWInt("SPKZ_CSKillStreak",n)
 	local timerName = "CSKill"..killer:UserID()
 	timer.Create(timerName , cvars.Number("spkz_dks_CSKillTimer") , 1, function()
 		if not IsValid(killer) then return end
 		killer:SetNWInt("SPKZ_CSKillStreak",1)
 	end)
+	return n
 end
