@@ -107,7 +107,7 @@ function SPKZ_PostGamemodeLoaded()
 		end
 	end
 end
-hook.Add("PostGamemodeLoaded","PostGamemodeLoaded",PostGamemodeLoaded)
+hook.Add("PostGamemodeLoaded","SPKZ_PostGamemodeLoaded",SPKZ_PostGamemodeLoaded)
 function SPKZ_IncKill(killer,victim)
 	if not killer:IsPlayer() then return end
 	local FirstBlood = (TotalKills == 0)
