@@ -97,8 +97,17 @@ function SPKZ_ResetAll()
 	end
 	TotalKills = 0
 end
-hook.Add("RoundEnd","SPKZ_ResetAll",SPKZ_ResetAll)
 hook.Add("TTTEndRound","SPKZ_ResetAll",SPKZ_ResetAll)
+function SPKZ_PostGamemodeLoaded()
+	if GAMEMODE.OnRoundEnd or GAMEMODE.BaseClass.OnRoundEnd then
+		local oldfn = GAMEMODE.OnRoundEnd or GAMEMODE.BaseClass.OnRoundEnd
+		function GAMEMODE:OnRoundEnd(...)
+			SPKZ_ResetAll()
+			oldfn(...)
+		end
+	end
+end
+hook.Add("PostGamemodeLoaded","PostGamemodeLoaded",PostGamemodeLoaded)
 function SPKZ_IncKill(killer,victim)
 	if not killer:IsPlayer() then return end
 	local FirstBlood = (TotalKills == 0)
