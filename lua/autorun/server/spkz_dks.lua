@@ -1,6 +1,6 @@
 --Hello and why the hell are you decompiling my code?
 --$!nG1_ePlAyErZ's Dota 2 Kill Streak Display
-	local version = "2.2"
+	local version = "2.2a"
 	local releasedate = "10/6/2014"
 	local TotalKills = 0
 local function InitSPKZCmds()
@@ -26,8 +26,6 @@ local function CheckFF(ply1,ply2) --Return TRUE if is friendly fire
 	--PLY
 local function SPKZ_PlayerKilled( ply, inflictor, attacker )
 	if not cvars.Bool("spkz_dks_enabled") then return end
-	local killstreakAtkr = attacker:GetNetworkedInt('SPKZ_KillStreak',0)
-	local killstreakVctm = ply:GetNetworkedInt('SPKZ_KillStreak',0)
 	if(inflictor:GetClass() == "worldspawn")then	
 		return
 	elseif ( ply == attacker ) then
@@ -50,7 +48,6 @@ local function SPKZ_PlayerKilled( ply, inflictor, attacker )
 local function SPKZ_NPCKilled( npc, attacker,inflictor )
 	if not cvars.Bool("spkz_dks_enabled") then return end
 	if not cvars.Bool("spkz_dks_npcs") then return end
-	local killstreakAtkr = attacker:GetNetworkedInt('SPKZ_KillStreak',0)
 	if(attacker:IsPlayer()) then
 	local ColorkAtkr = team.GetColor(attacker:Team())
 	end
