@@ -9,13 +9,19 @@
 --     \/_/:/  /     \:\  \      \:\~~\          |::/  /  
 --       /:/  /       \:\__\      \:\__\         |:/  /  
 --       \/__/     __  \/__/       \/__/         |/__/       
---	$!nG1_ePlAyErZ's Dota Kill Streak
+--	$!nG1_ePlAyErZ's Dota Kill Streak (yep I know the sound is from UT2K4)
 --		CREDITS:
 --			Team Ulysses						-	ULX CSay code that I've hijacked it
 --			Bronisyu	(STEAM_0:1:35342659)	-	Bug reporting and testing
---Hello and why the hell are you decompiling my code?
-	local version = "2.2b"
-	local releasedate = "10/6/2014"
+-- Why the hell are you decompiling my code?
+-- Version 2.3 Notes:
+--	Tested on: Sandbox, Prop Hunt (nothing else but you can test and bug report to me)
+-- If you're reading this, you have my permission to edit, modify, remake the code but you will required to leave me as a credit.
+-- Also, you should consider about buy me a beer
+--	PayPal:		admin (at) monolidthz.com
+--	Dogecoin:	DSUQoCu2fHT1LQTJTF5wSUZ6C8u3TvQs5i
+	local version = "2.3"
+	local releasedate = "28/10/2014"
 	local TotalKills = 0
 local function InitSPKZCmds()
 		MsgC( Color( 0, 255, 0 ), "$!nG1_ePlAyErZ's Dota Kill Streak v".. version .."("..releasedate..") Initialized\n" )
@@ -27,6 +33,28 @@ local function InitSPKZCmds()
 		CreateConVar( "SPKZ_DKS_Broadcast", "1", FCVAR_ARCHIVE, "Only send message to every player or only killer?" )
 		resource.AddWorkshop("191294108") --this will make client also hear sounds
 		util.AddNetworkString("ClientsideKillStreak")
+		if !game.SinglePlayer( ) then
+			--Tracking code. eh... I mean analytics.
+			--I do not collect any personal information besides Server IP, Server Port, Server Name, Active Gamemode, Operating System
+			--I collect these only for development purpose only. Totally not suspicious at all for addon with 3k subs :D
+			local plat = 0
+			if system.IsWindows() then
+				plat = 1
+			elseif system.IsLinux() then
+				plat = 2
+			elseif system.IsOSX() then
+				plat = 3
+			end
+			local aData = {
+				SV_GameMode = engine.ActiveGamemode(),
+				SV_IPRaw = GetConVarString( "hostip" ),
+				SV_Port = GetConVarString("hostport"),
+				SV_Hostname = GetConVarString("hostname"),
+				SV_Platform = tostring(plat),
+				SV_DKSVersion = version,
+			}
+			http.Post( "http://api.monolidthz.com/SPKZ_GB/DotaKillStreakStats.php", aData)
+		end
 	end
 	hook.Add("Initialize", "SPKZ_Init", InitSPKZCmds)
 	local killstreakNames = { "","","Killing Spree","Dominating","Mega Kill","Unstoppable","Wicked Sick","Monster Kill","GODLIKE","Beyond GODLIKE" }
@@ -39,6 +67,7 @@ local function CheckFF(ply1,ply2) --Return TRUE if is friendly fire
 	end
 	--PLY
 local function SPKZ_PlayerKilled( ply, inflictor, attacker )
+	-- debug.Trace()
 	if not cvars.Bool("spkz_dks_enabled") then return end
 	if !IsValid(attacker) then return end
 	if(inflictor:GetClass() == "worldspawn")then	
@@ -59,6 +88,7 @@ local function SPKZ_PlayerKilled( ply, inflictor, attacker )
 	end
 	--Changed from PlayerDeath to DoPlayerDeath because shit is breaking in fretta
 	hook.Add("DoPlayerDeath","SPKZ_PlayerKilled",SPKZ_PlayerKilled)
+	hook.Add("PlayerDeath","SPKZ_PlayerKilled",SPKZ_PlayerKilled)
 	--NPC
 local function SPKZ_NPCKilled( npc, attacker,inflictor )
 	if not cvars.Bool("spkz_dks_enabled") then return end

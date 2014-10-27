@@ -6,10 +6,12 @@
 	local killstreakSpecialSounds = { "announcer_1stblood_01.mp3","announcer_kill_double_01.mp3","announcer_kill_triple_01.mp3", "announcer_kill_ultra_01.mp3", "announcer_kill_rampage_01.mp3", "announcer_ownage_01.mp3" }
 	local killstreakConsecutiveNames = { nil, "with a double kill", "with a TRIPLE kill!", "with an ULTRA KILL!", "AND IS ON A RAMPAGE!!!" }
 	local killstreakConsecutiveNamesNKS = { nil, "got a double kill!", "has a TRIPLE kill!", "earned an ULTRA KILL!", "IS ON A RAMPAGE!!" }
-
-	--Intitizin' Sh!t (precache sound in order to prevent fuckin-godamn-lag-everytime-when-a-shitstreak-show-up)
+	local cv = {}
+	--Intitizin'n stuff (precache sound in order to prevent fuckin-godamn-lag-everytime-when-a-shitstreak-show-up)
 local function InitSPKZCS()
 		MsgC( Color( 0, 0, 255 ), "$!nG1_ePlAyErZ's Dota Kill Streak Initialized\n" )
+		cv.optout = CreateClientConVar( "SPKZ_CSKillStreak_Optout", 0, true, false )	--Added in 2.3 : clients can now opt-out from showing killstreaks on their screen
+		cv.shutup = CreateClientConVar( "SPKZ_CSKillStreak_Mute", 0, true, false )		--Added in 2.3 : Feature request by XGamingMelonX (STEAM_0:0:43579980) - clients can now shut up the announcer for good reason of their ears
 		for k,v in ipairs(killstreakSounds) do
 			if v == "" then
 				continue
@@ -30,7 +32,7 @@ end
 hook.Add("Initialize", "SPKZCS_Init", InitSPKZCS)
 --Killstreak Recieve
 net.Receive("ClientsideKillStreak",function ( len, pl )
-  --MsgC( Color( 128, 128, 128 ), "[SPKZCMD]Received KillData From Server. (" .. tostring( len ) .. ").\n" )
+  if cv.optout:GetBool() then return end
   local NetTable = net.ReadTable()
   local NetRecName = NetTable.atkrN
   local NetRecStreak = NetTable.atkrStreak
@@ -74,9 +76,13 @@ net.Receive("ClientsideKillStreak",function ( len, pl )
 		print(NetRecStreak,NetConsecutiveKills)
 		return
   end
-  if ksSound != "dota_killing_spree/" then surface.PlaySound(ksSound) end
-  if (csSound and ksSound) then timer.Simple(1, function() surface.PlaySound(csSound) end) end
-  if (csSound and not ksSound) then  surface.PlaySound(csSound) end
+  if cv.shutup:GetBool() then
+		--Does nothing
+  else
+	  if ksSound != "dota_killing_spree/" then surface.PlaySound(ksSound) end
+	  if (csSound and ksSound) then timer.Simple(1, function() surface.PlaySound(csSound) end) end
+	  if (csSound and not ksSound) then  surface.PlaySound(csSound) end
+  end
 	local duration = 5
 	local fade = 0.5
 	local start = CurTime()
