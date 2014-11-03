@@ -24,14 +24,4 @@
 *   4 Kills in a row - **Ultra Kill**
 *   5+ Kills in a row - **Rampage**
 
-**ConVars (Serverside)**:  
-*   **spkz_dks_enabled** [0/1] *Default: 1* If 0, Disable the entire system  
-*   **spkz_dks_deathmatch** [0/1] *Default: 1* If 1, Ignore Friendly Fire Checking  
-*   **spkz_dks_npcs** [0/1] *Default: 1* If 1, NPC Kills will also trigger the killstreak  
-*   **spkz_dks_deathmatch** [0/1] *Default: 0* If 1, Disable FF Checking.  
-*   **spkz_dks_CSKillTimer** [0-???] *Default: 15* How Many Seconds that Consecutive Kill Timer Reset?  
-*   **spkz_dks_Broadcast** [0/1] *Default: 1* Only send message to every player or only killer?  
-
-**TODO**:  
-*   Ownage Sound (4K by the same team and no one dying).  
-*   GUI Configurator
+More information please read wiki.
