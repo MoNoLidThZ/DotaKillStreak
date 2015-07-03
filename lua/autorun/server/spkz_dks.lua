@@ -15,7 +15,7 @@
 -- Why the hell are you decompiling my code?
 -- Version 2.3 Notes:
 -- 	+ Added API Version 1.0
--- 	* Changed SPKZ_DKS_Deathmatch command to SPKZ_DKS_TeamMode 
+-- 	* Changed SPKZ_DKS_Deathmatch convar to SPKZ_DKS_TeamMode 
 --	Tested on: Sandbox (nothing else but you can test and bug report to me)
 -- If you're reading this, you have my permission to edit, modify, remake the code but you will required to leave me as a credit.
 -- Also, you should consider about buy me a beer
